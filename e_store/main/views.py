@@ -32,3 +32,8 @@ def sign_in(request):
         login(request, user)
         return redirect('main')
     return render(request, 'main/sign_in.html')
+
+
+def logout_page(request):
+    logout(request)
+    return redirect('main')
