@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm
+from .forms import LoginForm, OrderForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Goods
 
@@ -37,3 +37,17 @@ def sign_in(request):
 def logout_page(request):
     logout(request)
     return redirect('main')
+
+
+def order(request, good_id):
+    good = Goods.objects.get(id=good_id)
+    form = OrderForm(initial={'good': good, 'user': request.user})
+    total_price = 0
+    context = {'good': good, 'total_price': total_price}
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            total_price = good.price * form.cleaned_data['quantity']
+            form.save()
+            return redirect('main')
+    return render(request, 'main/checkout.html', context)
