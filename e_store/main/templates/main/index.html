@@ -41,7 +41,7 @@
                <div class="search_section">
                   <ul>
                      {% if request.user.is_authenticated %}
-                     <li><a href="#">Welcome {{ request.user }}</a></li>
+                     <li><a href="{% url 'profile' user.id %}">Welcome {{ request.user }}</a></li>
                      <li><a href="{% url 'logout' %}">Logout</a></li>
                      {% else %}
                      <li><a href="{% url 'login' %}">Log In</a></li>
