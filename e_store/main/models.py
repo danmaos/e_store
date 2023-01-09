@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils import timezone
 
 
 class Goods(models.Model):
@@ -27,7 +29,7 @@ class Order(models.Model):
     name = models.CharField(max_length=10)
     quantity = models.PositiveIntegerField()
     email = models.EmailField(max_length=30)
-    phone = models.IntegerField(max_length=15)
+    phone = models.IntegerField()
     city = models.CharField(max_length=20)
     street = models.CharField(max_length=20)
     house = models.CharField(max_length=10)
@@ -37,3 +39,18 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=20)
+    text = models.TextField(max_length=200)
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
+
+    def publish(self):
+        self.published_date = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return self.title

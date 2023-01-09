@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
-from .forms import LoginForm, OrderForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import LoginForm, OrderForm, CommentForm
 from django.contrib.auth import authenticate, login, logout
-from .models import Goods
+from .models import Goods, Comment
+from django.utils import timezone
 
 
 def main_page(request):
@@ -55,3 +56,7 @@ def order(request, good_id):
             form.save()
             return redirect('main')
     return render(request, 'main/checkout.html', context)
+
+
+# def comment_list(request):
+#     comments = Comment.objects.filter
