@@ -51,7 +51,6 @@ span {
   display: inline-block;
   position: relative;
   top: -65px;
-  transition: all 0.5s ease-in-out;
 }
 
 .text {
@@ -65,7 +64,6 @@ span {
   border: 2px solid rgba(255, 255, 255, 0);
   overflow: hidden;
   margin-top: 15px;
-  transition: all 0.5s ease-in-out;
 }
 
 .text:focus {

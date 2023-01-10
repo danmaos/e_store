@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
-from django.utils import timezone
+from datetime import date
 
 
 class Goods(models.Model):
@@ -14,7 +13,7 @@ class Goods(models.Model):
     description = models.TextField()
     price = models.PositiveIntegerField()
     category = models.CharField(max_length=30, choices=goods_choices)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(default='no_image.jpg', blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -42,15 +41,9 @@ class Order(models.Model):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=20)
+    good = models.ForeignKey(Goods, on_delete=models.CASCADE)
     text = models.TextField(max_length=200)
-    created_date = models.DateTimeField(default=timezone.now)
-    published_date = models.DateTimeField(blank=True, null=True)
-
-    def publish(self):
-        self.published_date = timezone.now()
-        self.save()
+    date = models.DateField(default=date.today())
 
     def __str__(self):
-        return self.title
+        return f'{self.text}'

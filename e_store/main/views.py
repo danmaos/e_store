@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .forms import LoginForm, OrderForm, CommentForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Goods, Comment
-from django.utils import timezone
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def main_page(request):
@@ -42,7 +42,14 @@ def logout_page(request):
 
 def product_detail(request, good_id):
     good = Goods.objects.get(id=good_id)
-    context = {'good': good}
+    comment = good.comment_set.all()
+    form = CommentForm(initial={'good': good})
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.good = good
+            form.save()
+    context = {'good': good, 'comment': comment, 'form': form}
     return render(request, 'main/product_detail.html', context)
 
 
@@ -58,5 +65,10 @@ def order(request, good_id):
     return render(request, 'main/checkout.html', context)
 
 
-# def comment_list(request):
-#     comments = Comment.objects.filter
+def product_list(request):
+    good = Goods.objects.all()
+    paginator = Paginator(good, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {'good': good, 'page_obj': page_obj}
+    return render(request, 'main/product_list.html', context)

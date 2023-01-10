@@ -3,52 +3,75 @@
 {% load static %}
 
 {% block title %}
-Caraft
+Product list page
 {% endblock %}
-<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'
-      xmlns="http://www.w3.org/1999/html">
-<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+
 {% block content %}
 <div class="container">
 <div class="col-xs-12 col-md-6 bootstrap snippets bootdeys">
-<div class="product-content product-wrap clearfix">
+	<!-- product -->
+	{% for good in page_obj %}
+	<div class="product-content product-wrap clearfix">
 		<div class="row">
-          <div class="col-md-6">
-              <div class="pro-img-details">
-                  <img src="{{ good.image.url }}" alt="">
-              </div>
-          <div class="col-md-6">
-              <h2 class="pro-d-title">
-                  <strong> {{ good.name }}
-              </h2>
-              <h4>
-                  {{ good.description }}
-              </h4>
-              <div class="product_meta">
-                  <h3> <strong>Categories:</strong> {{ good.category }}</h3>
-                  <h3> <strong>Price : </strong> {{ good.price }}</h3></div>
-              <p>
-                  <button class="btn btn-round btn-danger" type="button"><i class="fa fa-shopping-cart"> <a href="{% url 'order' good.id %}">Заказать</a> </i></button>
-              </p>
-              </div>
-              <hr>
-              <div>
-                  {% for comment in comment %}
-                  <p>{{ comment.text }}</p>
-                  <p>{{ comment.date }}</p>
-                  {% endfor %}
-              </div>
-              <div>
-                  <form action="" method="post">
-                      {% csrf_token %}
-                      {{ form }}
-                      <button class="btn btn-round btn-success" type="submit" class="button">Комментировать</button>
-                  </form>
-              </div>
-          </div>
-      </div>
-    </div>
-  </div>
+				<div class="col-md-5 col-sm-12 col-xs-12">
+					<div class="product-image"> 
+						<img src="{{good.image.url}}" alt="194x228" class="img-responsive">
+						<span class="tag2 hot">
+							SALE
+						</span>
+					</div>
+				</div>
+
+				<div class="col-md-7 col-sm-12 col-xs-12">
+				<div class="product-deatil">
+						<h5 class="name">
+							<a href="{%url 'product' good.id%}">
+								{{ good.name }} <span>{{good.category}}</span>
+							</a>
+						</h5>
+						<p class="price-container">
+							<span>{{ good.price }}</span>
+						</p>
+				</div>
+				<div class="description">
+					<p> {{good.description}} </p>
+				</div>
+				<div class="product-info smart-form">
+					<div class="row">
+						<div class="col-md-6 col-sm-6 col-xs-6"> 
+							<a href="{%url 'order' good.id%}" class="btn btn-success">Заказать</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	<!-- end product -->
+</div>
+	<nav>
+              <ul class="pagination pagination-lg justify-content-center">
+                <li class="page-item">
+                    {% if page_obj.has_previous %}
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                    {% endif %}
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+                <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+                <li class="page-item">
+                    {% if page_obj.has_next %}
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                    {% endif %}
+                  </a>
+                </li>
+              </ul>
+            </nav>
 </div>
 <style type="text/css">
 .product-content {
@@ -370,4 +393,4 @@ Caraft
 
 </script>
 
-{% endblock %}
+{%endblock%}

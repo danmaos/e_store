@@ -19,4 +19,4 @@ class OrderForm(ModelForm):
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ('title', 'text')
+        fields = '__all__'

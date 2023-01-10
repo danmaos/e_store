@@ -10,7 +10,7 @@ class Profile(models.Model):
     date_birth = models.DateField(default=timezone.now)
     email = models.EmailField(max_length=50)
     description = models.TextField(max_length=200)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(default='avatar.png', blank=True, null=True)
     phone = models.IntegerField()
 
 
