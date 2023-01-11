@@ -142,40 +142,40 @@ E-Store
             <div class="carousel-inner">
                <div class="carousel-item active">
                   <div class="container">
-                     <h1 class="feature_taital">what is says our customer</h1>
-                     <p class="feature_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking</p>
+                     <h1 class="feature_taital">Оставить отзыв</h1>
+                     <p class="feature_text"></p>
                      <div class="client_section_2">
+                        <form method="post">
+                           {% csrf_token %}
                         <div class="image_9"><img src="{% static 'images/img-9.png' %}"></div>
-                        <h3 class="nolmal_text">Normal distribution</h3>
-                        <p class="ipsum_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look</p>
+                        <h3 class="nolmal_text">{{form.user}}</h3>
+                        <p class="ipsum_text">{{form.text}}
+                        <br>
+                        <br>
+                        {{form.date}}</p>
+                        <button type="submit" class="btn btn-primary w-100 mt-2" width="200">Оставить отзыв</button>
                         <div class="image_9"><img src="{% static 'images/icon-10.png' %}"></div>
+                        </form>
                      </div>
                   </div>
                </div>
+               {% for review in review %}
                <div class="carousel-item">
                   <div class="container">
-                     <h1 class="feature_taital">FEATURED PRODUCTS</h1>
-                     <p class="feature_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking</p>
+                     <h1 class="feature_taital">Отзывы клиентов</h1>
+                     <p class="feature_text"></p>
                      <div class="client_section_2">
                         <div class="image_9"><img src="{% static 'images/img-9.png' %}"></div>
-                        <h3 class="nolmal_text">Normal distribution</h3>
-                        <p class="ipsum_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look</p>
+                        <h3 class="nolmal_text">{{review.user}}</h3>
+                        <p class="ipsum_text">{{review.text}}
+                        <br>
+                        <br>
+                        {{review.date}}</p>
                         <div class="image_9"><img src="{% static 'images/icon-10.png' %}"></div>
                      </div>
                   </div>
                </div>
-               <div class="carousel-item">
-                  <div class="container">
-                     <h1 class="feature_taital">FEATURED PRODUCTS</h1>
-                     <p class="feature_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking</p>
-                     <div class="client_section_2">
-                        <div class="image_9"><img src="{% static 'images/img-9.png' %}"></div>
-                        <h3 class="nolmal_text">Normal distribution</h3>
-                        <p class="ipsum_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look</p>
-                        <div class="image_9"><img src="{% static 'images/icon-10.png' %}"></div>
-                     </div>
-                  </div>
-               </div>
+               {% endfor %}
             </div>
             <a class="carousel-control-prev" href="#main_slider" role="button" data-slide="prev">
             <i class=""><img src="{% static 'images/left-icon.png' %}"></i>

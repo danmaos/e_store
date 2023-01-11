@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, OrderForm, CommentForm
+from .forms import LoginForm, OrderForm, CommentForm, ReviewForm
 from django.contrib.auth import authenticate, login, logout
-from .models import Goods, Comment
+from .models import Goods, Comment, Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def main_page(request):
     goods = Goods.objects.all()
-    context = {'goods': goods}
+    review = Review.objects.all()
+    form = ReviewForm(initial={'user': request.user})
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, initial={'user': request.user})
+        if form.is_valid():
+            form.review = review
+            form.save()
+    context = {'goods': goods, 'review': review, 'form': form}
     return render(request, "main/index.html", context)
 
 
@@ -72,3 +79,4 @@ def product_list(request):
     page_obj = paginator.get_page(page_number)
     context = {'good': good, 'page_obj': page_obj}
     return render(request, 'main/product_list.html', context)
+

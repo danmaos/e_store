@@ -47,3 +47,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.text}'
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=200)
+    date = models.DateField(default=date.today())
+
+    def __str__(self):
+        return f'{self.text}'
