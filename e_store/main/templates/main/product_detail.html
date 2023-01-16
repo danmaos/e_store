@@ -26,7 +26,9 @@ Caraft
               </h4>
               <div class="product_meta">
                   <h3> <strong>Categories:</strong> {{ good.category }}</h3>
-                  <h3> <strong>Price : </strong> {{ good.price }}</h3></div>
+                  <h3> <strong>Price : </strong> {{ good.price }}</h3>
+                  <h3> <strong>Rating : </strong> {{rates}}</h3>
+              </div>
               <p>
                   <button class="btn btn-round btn-danger" type="button"><i class="fa fa-shopping-cart"> <a href="{% url 'order' good.id %}">Заказать</a> </i></button>
               </p>

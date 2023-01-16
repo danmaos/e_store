@@ -41,6 +41,7 @@ E-Store
                               <div><img src="{% static 'images/img-1.png' %}" class="image_1"></div>
                            </div>
                         </div>
+
                         <div class="button_main"><button class="all_text">All</button><input type="text" class="Enter_text" placeholder="Enter keywords" name=""><button class="search_text">Search</button></div>
                      </div>
                   </div>
@@ -71,6 +72,10 @@ E-Store
             </div>
          </div>
 <div class="container">
+   <form action="" method="get">
+      {{ filter.form }}
+      <input type="submit">
+   </form>
 <!-- Goods -->
    <div class="category_section_2">
       <div class="row">

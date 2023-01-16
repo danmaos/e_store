@@ -56,3 +56,12 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.text}'
+
+
+class Rating(models.Model):
+    good = models.ForeignKey(Goods, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rate = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.good, self.rate}"

@@ -3,6 +3,7 @@ from .forms import LoginForm, OrderForm, CommentForm, ReviewForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Goods, Comment, Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .filters import ProductFilter
 
 
 def main_page(request):
@@ -14,8 +15,22 @@ def main_page(request):
         if form.is_valid():
             form.review = review
             form.save()
-    context = {'goods': goods, 'review': review, 'form': form}
+    filter = ProductFilter(request.GET, queryset=goods)
+    goods = filter.qs
+    context = {'goods': goods, 'review': review, 'form': form, 'filter': filter}
     return render(request, "main/index.html", context)
+
+
+def average_rate(rates):
+    total = 0
+    count = 0
+    for i in rates:
+        total += i.rate
+        count += 1
+    if count != 0:
+        return round(total / count)
+    else:
+        return 'No rating yet'
 
 
 def login_page(request):
@@ -50,13 +65,15 @@ def logout_page(request):
 def product_detail(request, good_id):
     good = Goods.objects.get(id=good_id)
     comment = good.comment_set.all()
+    rates = good.rating_set.all()
+    result = average_rate(rates)
     form = CommentForm(initial={'good': good})
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             form.good = good
             form.save()
-    context = {'good': good, 'comment': comment, 'form': form}
+    context = {'good': good, 'comment': comment, 'form': form, 'rates': result}
     return render(request, 'main/product_detail.html', context)
 
 
@@ -79,4 +96,6 @@ def product_list(request):
     page_obj = paginator.get_page(page_number)
     context = {'good': good, 'page_obj': page_obj}
     return render(request, 'main/product_list.html', context)
+
+
 
