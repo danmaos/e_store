@@ -1,9 +1,11 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import LoginForm, OrderForm, CommentForm, ReviewForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Goods, Comment, Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
+from clients.models import Profile
 
 
 def main_page(request):
@@ -17,6 +19,9 @@ def main_page(request):
             form.save()
     filter = ProductFilter(request.GET, queryset=goods)
     goods = filter.qs
+    for good in goods:
+        if good.sale == True:
+            good.price = round(good.price * 0.8)
     context = {'goods': goods, 'review': review, 'form': form, 'filter': filter}
     return render(request, "main/index.html", context)
 
@@ -66,6 +71,8 @@ def product_detail(request, good_id):
     good = Goods.objects.get(id=good_id)
     comment = good.comment_set.all()
     rates = good.rating_set.all()
+    if good.sale == True:
+        good.price = round(good.price * 0.8)
     result = average_rate(rates)
     form = CommentForm(initial={'good': good})
     if request.method == 'POST':
@@ -78,14 +85,27 @@ def product_detail(request, good_id):
 
 
 def order(request, good_id):
+    profile = Profile.objects.get(user=request.user)
     good = Goods.objects.get(id=good_id)
     form = OrderForm(initial={'good': good, 'user': request.user})
-    context = {'good': good, 'form': form}
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('main')
+            total_price = good.price * form.cleaned_data['quantity']
+            if form.cleaned_data['pay_method'] == 'visa':
+                if profile.wallet >= total_price:
+                    profile.wallet -= total_price
+                    profile.order_count += total_price
+                    profile.save()
+                    return redirect('main')
+                else:
+                    return HttpResponse('not enough money')
+            else:
+                profile.order_count += total_price
+                profile.save()
+                form.save()
+                return redirect('main')
+    context = {'good': good, 'form': form}
     return render(request, 'main/checkout.html', context)
 
 

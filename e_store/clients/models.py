@@ -12,6 +12,8 @@ class Profile(models.Model):
     description = models.TextField(max_length=200)
     image = models.ImageField(default='avatar.png', blank=True, null=True)
     phone = models.IntegerField()
+    order_count = models.PositiveIntegerField(default=0)
+    wallet = models.PositiveIntegerField(default=0)
 
 
     def __str__(self):

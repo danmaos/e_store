@@ -14,6 +14,7 @@ class Goods(models.Model):
     price = models.PositiveIntegerField()
     category = models.CharField(max_length=30, choices=goods_choices)
     image = models.ImageField(default='no_image.jpg', blank=True, null=True)
+    sale = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name}"
@@ -22,8 +23,7 @@ class Goods(models.Model):
 class Order(models.Model):
     p_method = [
         ('cash', 'cash'),
-        ('visa', 'visa'),
-        ('paypal', 'paypal')
+        ('visa', 'visa')
     ]
     name = models.CharField(max_length=10)
     quantity = models.PositiveIntegerField()
