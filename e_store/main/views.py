@@ -6,6 +6,12 @@ from .models import Goods, Comment, Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
 from clients.models import Profile
+from .services import calculate_sale
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 
 def main_page(request):
@@ -18,7 +24,7 @@ def main_page(request):
             form.review = review
             form.save()
     filter = ProductFilter(request.GET, queryset=goods)
-    goods = filter.qs
+    goods = filter.qs[:3]
     for good in goods:
         if good.sale == True:
             good.price = round(good.price * 0.8)
@@ -92,6 +98,7 @@ def order(request, good_id):
         form = OrderForm(request.POST)
         if form.is_valid():
             total_price = good.price * form.cleaned_data['quantity']
+            total_price = calculate_sale(profile.order_count, total_price)
             if form.cleaned_data['pay_method'] == 'visa':
                 if profile.wallet >= total_price:
                     profile.wallet -= total_price
