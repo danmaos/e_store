@@ -1,12 +1,14 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import LoginForm, OrderForm, CommentForm, ReviewForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from .models import Goods, Comment, Review
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
 from clients.models import Profile
 from .services import calculate_sale
+from .token import account_activation_token
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
@@ -52,9 +54,25 @@ def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('main')
-
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = "Please activate your account"
+            message = render_to_string("main/acc_activate.html", {
+                "user": user,
+                "domain": current_site.domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": account_activation_token.make_token(user)
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse('please activate your account')
+    else:
+        form = LoginForm()
     return render(request, 'main/login.html', context)
 
 
@@ -125,4 +143,16 @@ def product_list(request):
     return render(request, 'main/product_list.html', context)
 
 
-
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return HttpResponse("Thanks for activate account")
+    else:
+        return HttpResponse("Activation link has crashed")

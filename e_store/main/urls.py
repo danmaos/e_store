@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import activate
 
 urlpatterns = [
     path('', views.main_page, name='main'),
@@ -9,4 +10,6 @@ urlpatterns = [
     path('product/<int:good_id>', views.product_detail, name='product'),
     path('order.<int:good_id>', views.order, name='order'),
     path('product_list', views.product_list, name='product_list'),
+    path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
+         activate, name='activate'),
 ]
