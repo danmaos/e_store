@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Order, Comment, Review
+from .models import Order, Comment, Review, Rating
 from django import forms
 
 
@@ -29,3 +29,8 @@ class ReviewForm(ModelForm):
         model = Review
         fields = '__all__'
 
+
+class RateForm(ModelForm):
+    class Meta:
+        model = Rating
+        fields = '__all__'
